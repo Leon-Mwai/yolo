@@ -1,16 +1,24 @@
 ---
-- name: Pull image from repository
-  docker_image:
-    name: brianbwire/brian-yolo-backend:v1.0.0
-    source: pull
+- name: Clone the YOLO repository
+  git:
+    repo: "https://github.com/Leon-Mwai/yolo.git"
+    dest: /home/vagrant/yolo
+    version: master
 
-- name: Create Node.js Backend Container
+- name: Build backend Docker image
+  docker_image:
+    name: yolo-backend
+    build:
+      path: /home/vagrant/yolo/backend
+    source: build
+
+- name: Run backend container
   docker_container:
-    name: brian-yolo-backend
-    image: brianbwire/brian-yolo-backend:v1.0.0
-    networks:
-      - name: app-net
+    name: yolo-backend
+    image: yolo-backend
+    state: started
+    restart_policy: always
     ports:
       - "5000:5000"
-    command: "npm start"
-  become: yes
+    env:
+      MONGO_URL: "mongodb://mongo:27017/yolo"
