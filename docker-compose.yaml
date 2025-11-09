@@ -8,15 +8,14 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - "3000:3000"
+      - "3001:3000"
     depends_on:
       - yolo-backend
     networks:
       - app-net
     environment:
-    - MONGO_URL=mongodb://mongo:27017/yolo
+      - MONGODB_URI=mongodb://mongo:27017/yolo
 
-  
   yolo-backend:
     build: ./backend
     container_name: yolo-backend
@@ -30,9 +29,8 @@ services:
     networks:
       - app-net
     environment:
-      - MONGO_URL=mongodb://mongo:27017/yolo
+      - MONGODB_URI=mongodb://mongo:27017/yolo
 
-  
   mongo:
     image: mongo
     container_name: mongo
@@ -43,11 +41,9 @@ services:
     volumes:
       - mongo_data:/data/db
 
-
 networks:
   app-net:
     driver: bridge
-
 
 volumes:
   mongo_data:
